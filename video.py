@@ -1,14 +1,37 @@
 import numpy as np
-import cv2
 import time
+import argparse
+import sys
+import cv2
 
+"""
+Globals
+"""
 kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(10,10))
-
 prev_frame_time = 0
 new_frame_time = 0
+args = None
 
-video_path = "object_video.mp4"
+def input_arguments():
+    """
+    Takes the input from terminal and returns a parse dictionary for arguments
+    
+    Parameters
+    ----------
+    NONE
+    """
+    parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter,description="This project aims to track an object in a given video",
+    usage="example run: python video.py -s 'path/to/your/video.mp4'")
 
+    parser.add_argument("-s" ,"--source", type= str, nargs= 1,
+                        help="source video path")
+
+    global args
+    args = vars(parser.parse_args())
+    if len(sys.argv) == 1:
+        parser.print_help()
+        sys.exit()
+    return args
 
 def calculate_fps():
     """
@@ -77,9 +100,10 @@ def capture_frames(cap):
     return frame1, frame2, control
 
 def main(): 
+    input_arguments()
+    video_path = args["source"][0]
 
     cap = cv2.VideoCapture(video_path)
-    print(type(cap))
     frame1,frame2,control = capture_frames(cap)
     while(True): 
         
