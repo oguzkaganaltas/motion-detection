@@ -10,7 +10,7 @@ kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(10,10))
 
 _,frame1 = cap.read()
 _,frame2 = cap.read()
-
+control = cv2.cvtColor(frame2,cv2.COLOR_BGR2GRAY)
 frame1 = cv2.GaussianBlur(cv2.cvtColor(frame1,cv2.COLOR_BGR2GRAY),(7,7),0)
 frame2 = cv2.GaussianBlur(cv2.cvtColor(frame2,cv2.COLOR_BGR2GRAY),(7,7),0)
 
@@ -30,10 +30,12 @@ while(True):
     fps = 1/(new_frame_time-prev_frame_time) 
     prev_frame_time = new_frame_time 
     cv2.putText(erode,"FPS:"+str(int(fps)),(10,20),cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,0),2)
-    cv2.imshow("frame",erode)
+    Hori = np.concatenate((erode,control), axis=1) 
 
+    cv2.imshow("frame",Hori)
     frame1 = frame2
     _,frame2 = cap.read() 
+    control = cv2.cvtColor(frame2,cv2.COLOR_BGR2GRAY)
     frame2 = cv2.GaussianBlur(cv2.cvtColor(frame2,cv2.COLOR_BGR2GRAY),(7,7),0)
     _,frame2 = cv2.threshold(frame2,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 
